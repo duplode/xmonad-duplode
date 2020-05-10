@@ -34,7 +34,8 @@ floatedHook = composeAll
     , className =? "kruler" --> doFloat
     ]
 
-myManageHook = placeHook (withGaps (20,0,20,0) (smart (0.25,0.25)))
+myManageHook =
+    placeHook (withGaps (20,0,20,0) (smart (0.25,0.25)))
     <+> floatedHook
 
 -- Used with pinnedFocusEventHook, defined later in this file.
@@ -44,6 +45,17 @@ needsPinnedFocus =
     -- gpick needs a focusFollowsMouse override, as otherwise its window will
     -- lose focus when you attempt to pick colours from other windows.
     className =? "Gpick"
+    -- It could make sense to add Firefox and Avril to this list, so that
+    -- using the scrollbar to skim things doesn't accidentally lead to
+    -- switching focus.
+
+-- Used with cedesFocusEventHook, defined later in this file.
+cedesFocus :: Query Bool
+cedesFocus =
+    className =? "firefox"
+    <||> className =? "Avril"
+    -- Firefox and Avril don't take focus on scroll, so that the scrollwheel
+    -- can be used on them without switching focus.
 
 -- I couldn't figure out how to get the default X.Prompt font from the Arch
 -- repositories, so this override is needed. Without it, the prompts fail
@@ -74,14 +86,19 @@ main = do
             >> updatePointer (0.5, 0.5) (0, 0)
         -- The default handleEventHook is mempty, so there is no need to
         -- include it here.
-        , handleEventHook = pinnedFocusEventHook needsPinnedFocus
+        , handleEventHook =
+            pinnedFocusEventHook needsPinnedFocus
+            <+> cedesFocusEventHook cedesFocus
             <+> minimizeEventHook
             <+> fullscreenEventHook
         , modMask = mod4Mask
         -- There are pros and cons to focusFollowsMouse. I still haven't
-        -- decided whether to leave it on.
-        --, focusFollowsMouse = False
-        --, clickJustFocuses = False
+        -- decided whether to leave it on globally. In any case,
+        -- pinnedFocusEventHook adn cedesFocusEventHook provide conveinent
+        -- overrides for specific programs.
+        -- clickJustFocuses = False is convenient for any windows which
+        -- cedes focus upon hover.
+        , clickJustFocuses = False
         } `additionalKeys`
         -- A prompt to stop me from accdientally killing XMonad.
         [ ((mod4Mask .|. shiftMask, xK_q), confirmPrompt promptBaseCfg "exit?" $
@@ -102,8 +119,7 @@ main = do
         ]
         `additionalKeys` spawnKeys configDir
         `additionalKeys` focusFollowsKeys
-        -- This is meant to be appended iff focusFollowsMouse is False.
-        --`additionalKeys` focusDoesntFollowKeys
+        `additionalKeys` focusDoesntFollowKeys
 
 spawnKeys configDir =
     [ ((mod4Mask .|. shiftMask, xK_z), spawn "xscreensaver-command -lock")
@@ -124,8 +140,10 @@ spawnKeys configDir =
         >> spawn (intercalate " " ["feh", configDir </> "Xmbindings.png"]))
     ]
 
+-- Currently these bindings are beng overriden by focusDoesntFollowKeys. It
+-- might be conveinent to use X.A.SumbMap here.
 focusFollowsKeys =
-    -- The Mod+Shift+c binding is the default one; I'm restating it for
+    -- This Mod+Shift+c binding is the default one; I'm restating it for
     -- the sake of consistency.
     [ ((mod4Mask .|. shiftMask, xK_c), kill)
     , ((mod4Mask, xK_d), withFocused minimizeWindow)
@@ -136,7 +154,7 @@ focusFollowsKeys =
 -- alternative set of bidings aims at lowering that risk.
 focusDoesntFollowKeys =
     [ ((mod4Mask .|. shiftMask, xK_c), atPointer killWindow)
-    -- Good old Alt-F4, closes unconditionally.
+    -- Good old Alt-F4. Closes the focused window regardless of where it is.
     , ((mod1Mask, xK_F4), kill)
     , ((mod4Mask, xK_d), atPointer minimizeWindow)
     , ((mod4Mask, xK_F8), withFocused minimizeWindow)
@@ -187,21 +205,32 @@ unminimizeAndBringSelected =
         focus w
         windows W.shiftMaster
 
--- Acts as if focusFollowsMouse was False if the query holds.
+-- Acts as if focusFollowsMouse was False if the query holds for the window
+-- the pointer is leaving.
 -- Implemented as an override of the CrossingEvent cases in X.Main.handle.
--- For a very similar solution, see
--- https://wiki.haskell.org/Xmonad/Config_archive/Brent_Yorgey%27s_darcs_xmonad.hs
--- See also X.L.MagicFocus.followOnlyIf.
 pinnedFocusEventHook :: Query Bool -> Event -> X All
-pinnedFocusEventHook q e@(CrossingEvent {ev_event_type = t})
+pinnedFocusEventHook cond e@(CrossingEvent {ev_event_type = t})
     | (t == enterNotify && ev_mode e == notifyNormal) || t == leaveNotify
         = do
             -- The focus hasn't changed yet.
             focusIsPinned <- withWindowSet $ \w ->
-                maybe (return False) (runQuery q) (W.peek w)
+                maybe (return False) (runQuery cond) (W.peek w)
             -- Run the default handler (thus changing the focus) only if the
             -- focus isn't pinned.
             return (All (not focusIsPinned))
     | otherwise = return (All True)
 pinnedFocusEventHook _ _ = return (All True)
 
+-- Acts as if focusFollowsMouse was False if the query holds for the window
+-- the pointer is entering.
+-- This is quite similar to followOnlyIfQ in
+-- https://wiki.haskell.org/Xmonad/Config_archive/Brent_Yorgey%27s_darcs_xmonad.hs
+-- See also X.L.MagicFocus.followOnlyIf.
+cedesFocusEventHook :: Query Bool -> Event -> X All
+cedesFocusEventHook cond e@(CrossingEvent {ev_window = w, ev_event_type = t})
+    | t == enterNotify && ev_mode e == notifyNormal
+        = do
+            focusIsCeded <- runQuery cond w
+            return (All (not focusIsCeded))
+    | otherwise = return (All True)
+cedesFocusEventHook _ _ = return $ All True
