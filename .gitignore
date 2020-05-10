@@ -1,0 +1,9 @@
+*.swp
+*~
+
+dist-newstyle
+cabal.config
+.ghc.environment.*
+
+prompt-history
+xmonad.errors

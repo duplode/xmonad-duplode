@@ -1,0 +1,22 @@
+cabal-version:       3.0
+name:                xmonad-duplode
+version:             0.1.0.0
+synopsis:            duplode's XMonad configuration.
+description:         duplode's XMonad configuration, including many of the
+                     ancillary things surrounding it. WIP.
+license:             BSD-3-Clause
+license-file:        LICENSE
+author:              Daniel Mlot
+maintainer:          duplode_1@yahoo.com.br
+category:            Desktop
+build-type:          Simple
+
+executable xmonad
+  main-is:             xmonad.hs
+  -- other-modules:
+  build-depends:       base >= 4.13
+                     , xmonad == 0.15.*
+                     , xmonad-contrib == 0.16.*
+                     , directory
+                     , filepath
+  default-language:    Haskell2010

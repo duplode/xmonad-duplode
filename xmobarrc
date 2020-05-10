@@ -1,0 +1,49 @@
+-- Based on:
+-- https://hackage.haskell.org/package/xmobar-0.33/src/readme.md
+-- https://wiki.haskell.org/Xmonad/Config_archive/John_Goerzen's_Configuration
+-- https://wiki.archlinux.org/index.php/Xmobar#Configuration
+Config
+    { font = "xft:Hack:size=9:bold:antialias=true"
+    , bgColor = "black"
+    , fgColor = "grey"
+    , position = TopW L 90
+    , commands =
+        [ Run Weather "SBSP"
+            ["-t"," <tempC>°"
+            ,"-L","18","-H","25"
+            ,"--normal","green","--high","red","--low","lightblue"
+            ] 36000
+        , Run MPD
+            ["-t", "<artist> <statei> <title>", "--"
+            , "-h", "localhost" , "-p", "6600"
+            , "-P", "\9654" , "-Z", "\9646\9646" , "-S", "\9632"
+            ] 10
+        , Run Cpu
+            ["-t","C: <total>%"
+            ,"-L","3","-H","50",
+            "--normal","green","--high","red"
+            ] 10
+        , Run Memory ["-t","M: <usedratio>%"] 10
+        , Run Swap ["-t","S: <usedratio>%"] 10
+        , Run Battery
+            [ "--template" , "B: <acstatus>"
+            , "--Low"      , "10"        -- units: %
+            , "--High"     , "80"        -- units: %
+            , "--low"      , "red"
+            , "--normal"   , "orange"
+            , "--high"     , "green"
+            , "--" -- battery specific options
+            -- discharging status
+            , "-o" , "<left>% (<timeleft>)"
+            -- AC "on" status
+            , "-O" , "<fc=#dea821>Charging</fc>"
+            -- charged status
+            , "-i" , "<fc=#00cc00>Charged</fc>"
+            ] 50
+        , Run Date "%a %d/%m %R" "date" 10
+        , Run StdinReader
+        ]
+    , sepChar = "%"
+    , alignSep = "}{"
+    , template = "%StdinReader% } %mpd% { %cpu% | %memory% * %swap% | %battery%   <fc=#ee9a00>%date%</fc>   %SBSP%"
+    }
