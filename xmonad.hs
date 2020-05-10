@@ -57,8 +57,8 @@ main = do
     -- well keep it here too.
     xmobarPath <- (\dir -> dir </> "bin" </> "xmobar")
         <$> getAppUserDataDirectory "cabal"
-    xmobarConfigPath <- (\dir -> dir </> "xmobarrc")
-        <$> getAppUserDataDirectory "xmonad"
+    configDir <- getAppUserDataDirectory "xmonad"
+    let xmobarConfigPath = configDir </> "xmobarrc"
     xmproc <- spawnPipe $ intercalate " " [xmobarPath, xmobarConfigPath]
 
     xmonad $ docks $ ewmh def
@@ -92,12 +92,12 @@ main = do
         , ((mod4Mask, xK_g), unminimizeAndGoToSelected def)
         , ((mod4Mask .|. shiftMask, xK_g), unminimizeAndBringSelected def)
         ]
-        `additionalKeys` spawnKeys
+        `additionalKeys` spawnKeys configDir
         `additionalKeys` focusFollowsKeys
         -- This is meant to be appended iff focusFollowsMouse is False.
         --`additionalKeys` focusDoesntFollowKeys
 
-spawnKeys =
+spawnKeys configDir =
     [ ((mod4Mask .|. shiftMask, xK_z), spawn "xscreensaver-command -lock")
     -- Given that dmenu_run at Mod+p already provides a lightweight runner, I
     -- have replaced gmrun in this binding with the Xfce runner, which makes
@@ -113,13 +113,7 @@ spawnKeys =
     -- the default help message.
     -- Source: https://wiki.haskell.org/File:Xmbindings.png
     , ((mod4Mask .|. shiftMask, xK_slash), toggleFloatNext
-        >> spawn "feh https://wiki.haskell.org/wikiupload/b/b8/Xmbindings.png")
-    -- Possible alternative to X.L.Minimize. I'll probably end up sticking
-    -- with Minimize, though. At least in this setup, KDocker feels a little
-    -- glitchy sometimes, though X.H.EwmhDesktops and
-    -- focusFollowsMouse = False improve its interaction with XMonad quite a
-    -- bit.
-    , ((mod4Mask, xK_z), spawn "kdocker")  -- Possible alternative to X.L.Minimize.
+        >> spawn (intercalate " " ["feh", configDir </> "Xmbindings.png"]))
     ]
 
 focusFollowsKeys =

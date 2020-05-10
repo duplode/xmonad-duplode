@@ -63,10 +63,6 @@ Things I rely on for this configuration include:
 
     - [MPD](https://www.archlinux.org/packages/extra/x86_64/mpd/) (I happen to
         use xmobar's MPD extension);
-    - [KDocker](https://aur.archlinux.org/packages/kdocker/) (While I have
-        been trying it as a way to conveniently toggle the visibility of the
-        Thunderbird window, at this point I'm pretty much convinced that is
-        better done through XMonad's own tools).
 
 - Fonts:
 
