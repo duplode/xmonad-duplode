@@ -23,6 +23,7 @@ import XMonad.Actions.UpdatePointer
 import XMonad.Hooks.FloatNext
 import XMonad.Prompt.ConfirmPrompt
 import XMonad.Prompt.Man
+import XMonad.Prompt.Unicode
 import qualified XMonad.Prompt as Prompt
 import qualified XMonad.Actions.GridSelect as Grid
 import qualified XMonad.Actions.WindowBringer as Bringer
@@ -91,6 +92,13 @@ main = do
         -- can be conveniently restored.
         , ((mod4Mask, xK_g), unminimizeAndGoToSelected def)
         , ((mod4Mask .|. shiftMask, xK_g), unminimizeAndBringSelected def)
+        , ((mod4Mask, xK_F1), manPrompt promptBaseCfg)
+        -- The selected character will go to the "primary" X selection
+        -- buffer, and can be pasted with the mouse middle button. To use the
+        -- regular clipboard instead, use X.Prompt.Unicode.mkUnicodePrompt to
+        -- pass the -b flag to xsel.
+        , ((mod4Mask, xK_backslash)
+            , unicodePrompt "/usr/share/unicode/UnicodeData.txt" promptBaseCfg)
         ]
         `additionalKeys` spawnKeys configDir
         `additionalKeys` focusFollowsKeys

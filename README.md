@@ -63,6 +63,10 @@ Things I rely on for this configuration include:
 
     - [MPD](https://www.archlinux.org/packages/extra/x86_64/mpd/) (I happen to
         use xmobar's MPD extension);
+    - [XSel](https://www.archlinux.org/packages/community/x86_64/xsel/) (for
+        the Unicode prompt).
+    - [`unicode-character-database`](https://www.archlinux.org/packages/extra/any/unicode-character-database/)
+        (also for the Unicode prompt).
 
 - Fonts:
 
