@@ -13,11 +13,11 @@ Config
             ,"-L","18","-H","25"
             ,"--normal","green","--high","red","--low","lightblue"
             ] 36000
-        , Run MPD
-            ["-t", "<artist> <statei> <title>", "--"
-            , "-h", "localhost" , "-p", "6600"
-            , "-P", "\9654" , "-Z", "\9646\9646" , "-S", "\9632"
-            ] 10
+        --, Run AutoMPD
+        --    ["-t", "<artist> <statei> <title>", "--"
+        --    , "-h", "localhost" , "-p", "6600"
+        --    , "-P", "\9654" , "-Z", "\9646\9646" , "-S", "\9632"
+        --    ]
         , Run Cpu
             ["-t","C: <total>%"
             ,"-L","3","-H","50",
@@ -45,5 +45,6 @@ Config
         ]
     , sepChar = "%"
     , alignSep = "}{"
-    , template = "%StdinReader% } %mpd% { %cpu% | %memory% * %swap% | %battery%   <fc=#ee9a00>%date%</fc>   %SBSP%"
+    --, template = "%StdinReader% } %autompd% { %cpu% | %memory% * %swap% | %battery%   <fc=#ee9a00>%date%</fc>   %SBSP%"
+    , template = "%StdinReader% }{ %cpu% | %memory% * %swap% | %battery%   <fc=#ee9a00>%date%</fc>   %SBSP%"
     }

@@ -28,15 +28,17 @@ import qualified XMonad.Prompt as Prompt
 import qualified XMonad.Actions.GridSelect as Grid
 import qualified XMonad.Actions.WindowBringer as Bringer
 
-floatedHook = composeAll
+launchHook = composeAll
     [ className =? "Gimp" --> doFloat
     , className =? "Xfce4-appfinder" --> doFloat
     , className =? "kruler" --> doFloat
+    -- This Spotify hook requires https://github.com/dasJ/spotifywm
+    , className =? "Spotify" --> doShift "8"
     ]
 
 myManageHook =
     placeHook (withGaps (20,0,20,0) (smart (0.25,0.25)))
-    <+> floatedHook
+    <+> launchHook
 
 -- Used with pinnedFocusEventHook, defined later in this file.
 -- Can be extended with the usual X.ManageHook combinators.
