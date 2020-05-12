@@ -52,11 +52,12 @@ needsPinnedFocus =
     -- switching focus.
 
 -- Used with cedesFocusEventHook, defined later in this file.
+-- Note that for now cedesFocusEventHook isn't actually being used.
 cedesFocus :: Query Bool
 cedesFocus =
     className =? "firefox"
-    <||> className =? "Avril"
-    -- Firefox and Avril don't take focus on scroll, so that the scrollwheel
+    <||> className =? "Atril"
+    -- Firefox and Atril don't take focus on scroll, so that the scrollwheel
     -- can be used on them without switching focus.
 
 -- I couldn't figure out how to get the default X.Prompt font from the Arch
@@ -90,7 +91,7 @@ main = do
         -- include it here.
         , handleEventHook =
             pinnedFocusEventHook needsPinnedFocus
-            <+> cedesFocusEventHook cedesFocus
+            -- <+> cedesFocusEventHook cedesFocus
             <+> minimizeEventHook
             <+> fullscreenEventHook
         , modMask = mod4Mask
