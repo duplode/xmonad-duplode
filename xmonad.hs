@@ -27,6 +27,10 @@ import XMonad.Prompt.Unicode
 import qualified XMonad.Prompt as Prompt
 import qualified XMonad.Actions.GridSelect as Grid
 import qualified XMonad.Actions.WindowBringer as Bringer
+import XMonad.Layout.Grid
+import XMonad.Layout.CenteredMaster
+import XMonad.Layout.PerWorkspace
+import XMonad.Hooks.ManageHelpers
 
 launchHook = composeAll
     [ className =? "Gimp" --> doFloat
@@ -34,10 +38,14 @@ launchHook = composeAll
     , className =? "kruler" --> doFloat
     -- This Spotify hook requires https://github.com/dasJ/spotifywm
     , className =? "Spotify" --> doShift "8"
+    -- I'd rather shift the machine, but that doesn't seem to work out of the
+    -- box.
+    , className =? "VirtualBox Manager" --> doShift "7"
+    , className =? "dosbox" --> doShift "6" <+> doCenterFloat
     ]
 
 myManageHook =
-    placeHook (withGaps (20,0,20,0) (smart (0.25,0.25)))
+    mempty -- placeHook (withGaps (20,0,20,0) (smart (0.25,0.25)))
     <+> launchHook
 
 -- Used with pinnedFocusEventHook, defined later in this file.
@@ -60,6 +68,27 @@ cedesFocus =
     -- Firefox and Atril don't take focus on scroll, so that the scrollwheel
     -- can be used on them without switching focus.
 
+vanillaTall = Tall 1 (3/100) (1/2)
+
+stuntsLayout = Grid ||| Mirror vanillaTall ||| Full
+
+myLayoutHook = onWorkspace "6" stuntsLayout
+    $ layoutHook def
+
+-- Issues I saw upon briefly testing layouts:
+-- * X.L.Cross doesn't mix well with focusFollowsMouse = True.
+--   It doesn't seem to be the only one.
+-- * X.L.DragPane doesn't mix well with X.A.UpdatePointer
+-- * Creating and closing xterms in X.L.Dwindle and X.L.Spiral somehow
+--   seems to introduce newlines in the terminals.
+-- * Many layouts won't refresh their parameters upon reloading XMonad.
+
+-- Layouts that felt nice:
+-- * X.L.BinaryColumn
+-- * X.L.CenteredMaster
+-- * X.L.GridVariants
+-- * X.L.ThreeColumns
+
 -- I couldn't figure out how to get the default X.Prompt font from the Arch
 -- repositories, so this override is needed. Without it, the prompts fail
 -- silently. This appears to be the same issue discussed at
@@ -81,12 +110,12 @@ main = do
         { manageHook = floatNextHook <+> manageDocks
             <+> myManageHook <+> manageHook def
         , layoutHook = minimize . boringWindows . avoidStruts
-            $ layoutHook def
+            $ myLayoutHook
         , logHook = dynamicLogWithPP xmobarPP
             { ppOutput = hPutStrLn xmproc
             , ppTitle = xmobarColor "green" "" . shorten 50
             }
-            >> updatePointer (0.5, 0.5) (0, 0)
+            -- >> updatePointer (0.5, 0.5) (0, 0)
         -- The default handleEventHook is mempty, so there is no need to
         -- include it here.
         , handleEventHook =
@@ -101,6 +130,7 @@ main = do
         -- overrides for specific programs.
         -- clickJustFocuses = False is convenient for any windows which
         -- cedes focus upon hover.
+        --, focusFollowsMouse = False
         , clickJustFocuses = False
         } `additionalKeys`
         -- A prompt to stop me from accdientally killing XMonad.
