@@ -6,7 +6,7 @@ Config
     { font = "xft:Hack:size=9:bold:antialias=true"
     , bgColor = "black"
     , fgColor = "grey"
-    , position = TopW L 90
+    , position = TopSize L 90 18
     , commands =
         [ Run Weather "SBSP"
             ["-t"," <tempC>°"

@@ -33,8 +33,9 @@ A few words about some of the other files in this directory:
 
 Things I rely on for this configuration include:
 
-- [xmobar](https://hackage.haskell.org/package/xmobar), version 0.33,
-    installed from Hackage with all extensions enabled.
+- [xmobar](https://hackage.haskell.org/package/xmobar), version 0.37,
+    installed from Hackage with all extensions enabled (`-fall_extensions`
+    flag).
 
 - Programs used by XMonad's default configuration:
 
