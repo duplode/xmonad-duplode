@@ -31,6 +31,7 @@ import XMonad.Layout.Grid
 import XMonad.Layout.CenteredMaster
 import XMonad.Layout.PerWorkspace
 import XMonad.Hooks.ManageHelpers
+import XMonad.Layout.WorkspaceDir
 
 launchHook = composeAll
     [ className =? "Gimp" --> doFloat
@@ -106,10 +107,13 @@ main = do
     let xmobarConfigPath = configDir </> "xmobarrc"
     xmproc <- spawnPipe $ intercalate " " [xmobarPath, xmobarConfigPath]
 
+    homeDir <- getHomeDirectory
+
     xmonad $ docks $ ewmh def
         { manageHook = floatNextHook <+> manageDocks
             <+> myManageHook <+> manageHook def
-        , layoutHook = minimize . boringWindows . avoidStruts
+        , layoutHook = workspaceDir homeDir
+            . minimize . boringWindows . avoidStruts
             $ myLayoutHook
         , logHook = dynamicLogWithPP xmobarPP
             { ppOutput = hPutStrLn xmproc
@@ -149,6 +153,9 @@ main = do
         -- pass the -b flag to xsel.
         , ((mod4Mask, xK_backslash)
             , unicodePrompt "/usr/share/unicode/UnicodeData.txt" promptBaseCfg)
+        , ((mod4Mask, xK_semicolon), changeDir promptBaseCfg)
+        , ((mod4Mask .|. shiftMask, xK_semicolon)
+            , changeDir promptBaseCfg {Prompt.defaultText = "~"})
         ]
         `additionalKeys` spawnKeys configDir
         `additionalKeys` focusFollowsKeys
