@@ -109,7 +109,7 @@ main = do
 
     homeDir <- getHomeDirectory
 
-    xmonad $ docks $ ewmh def
+    xmonad $ docks $ ewmhFullscreen $ ewmh def
         { manageHook = floatNextHook <+> manageDocks
             <+> myManageHook <+> manageHook def
         , layoutHook = workspaceDir homeDir
@@ -126,7 +126,6 @@ main = do
             pinnedFocusEventHook needsPinnedFocus
             -- <+> cedesFocusEventHook cedesFocus
             <+> minimizeEventHook
-            <+> fullscreenEventHook
         , modMask = mod4Mask
         -- There are pros and cons to focusFollowsMouse. I still haven't
         -- decided whether to leave it on globally. In any case,
