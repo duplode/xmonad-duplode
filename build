@@ -1,4 +1,4 @@
 #!/bin/sh
 #cp xinitrc ~/.xinitrc
 #cp Xresources ~/.Xresources
-cabal exec ghc -- --make -no-keep-hi-files -no-keep-o-files xmonad.hs -o ~/.local/bin/xmonad
+cabal exec ghc -- --make -no-keep-hi-files -no-keep-o-files xmonad.hs -o $1 # ~/.local/bin/xmonad
