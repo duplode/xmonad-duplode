@@ -15,8 +15,8 @@ executable xmonad
   main-is:             xmonad.hs
   -- other-modules:
   build-depends:       base >= 4.13
-                     , xmonad == 0.15.*
-                     , xmonad-contrib == 0.16.*
+                     , xmonad >= 0.16
+                     , xmonad-contrib >= 0.16
                      , directory
                      , filepath
   default-language:    Haskell2010
