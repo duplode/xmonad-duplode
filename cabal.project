@@ -1,11 +1,20 @@
 packages: .
 
+-- To use development versions of xmonad and xmonad-contrib, uncomment
+-- the entries below and adjust the references as appropriate.
+
 --source-repository-package
 --    type: git
 --    location: https://github.com/xmonad/xmonad.git
---    tag: e363c44bb0694c0932aab7091434c9eeb6e19653
+--    tag: e25d090112f2a76364a10b88a729b8586c18145b
 
 --source-repository-package
 --    type: git
 --    location: https://github.com/xmonad/xmonad-contrib.git
---    tag: b963c3cf9d3be4f91d84e06c349ca856d8b719dc
+--    tag: adeb27dc693adaf564fdbf96497f97d3b157d441
+
+-- If GHCup is used to manage GHC versions, it is a good idea to
+-- specify a fixed version by adding the following option to
+-- cabal.project.local (replace the version as appropriate):
+
+-- with-compiler: ghc-9.0.1
