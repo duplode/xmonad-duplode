@@ -44,6 +44,7 @@ launchHook = composeAll
     , className =? "VirtualBox Manager" --> doShift "7"
     , className =? "dosbox" --> doShift "6" <+> doCenterFloat
     , className =? "dosbox-x" --> doShift "6" <+> doCenterFloat
+    , className =? "dosbox-staging" --> doShift "6" <+> doCenterFloat
     ]
 
 myManageHook =
