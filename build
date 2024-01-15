@@ -1,4 +1,3 @@
 #!/bin/sh
-#cp xinitrc ~/.xinitrc
-#cp Xresources ~/.Xresources
-cabal exec ghc -- --make -no-keep-hi-files -no-keep-o-files xmonad.hs -o $1 # ~/.local/bin/xmonad
+cd "$HOME/.xmonad" && cabal build || exit
+ln -sfT "$(cabal list-bin xmonad)" "$1"
