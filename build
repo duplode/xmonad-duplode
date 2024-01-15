@@ -1,3 +1,4 @@
 #!/bin/sh
+# Based on https://github.com/xmonad/xmonad/issues/403#issuecomment-1202160067
 cd "$HOME/.xmonad" && cabal build || exit
 ln -sfT "$(cabal list-bin xmonad)" "$1"

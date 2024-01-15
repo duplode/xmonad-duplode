@@ -1,6 +1,6 @@
 My XMonad configuration. Most definitely a WIP. In particular, I haven't done
 much with layouts yet, because I still have to figure out which layouts I
-actually want to use. (I have resumed using XMonad after many years.)
+actually want to use.
 
 ## Using the configuration
 
@@ -8,16 +8,20 @@ This repository mirrors my `~/.xmonad` directory. The configuration code is
 managed as a Cabal project, so that I can easily pull development versions of
 `xmonad` and `xmonad-contrib` (see the `cabal.project` file), as well as
 additional packages if need be. The `build` script, called by XMonad upon
-reloading, recompiles the binary using `cabal exec ghc`, and copies it to
-`~/.local/bin`, which is in my `$PATH`.  (I couldn't figure how to make it
-work with `cabal install`, and even if I did I wouldn't have wanted to end up
-with an arbitrary number of copies of the binary in my Cabal store.)
+reloading, recompiles the binary using `cabal build` and symlinks it to
+location expected by XMonad.
 
 To run XMonad with this configuration, assuming all the non-Haskell parts of
-the setup are already in place, run the `build` script a
-single time to create the `xmonad` binary. Then, copy the reference
-`xinitrc` to `~/.xinitrc` and, after your next login, start X with `startx`
-(alternatively, use the provided `xinitrc` directly with `startx
+the setup are already in place, run (replacing `~/.local/bin` by an
+appropriate location in your PATH)...
+
+```
+cabal build && cp "$(cabal list-bin xmonad)" ~/.local/bin
+```
+
+... a single time to create the "bootstrap" `xmonad` binary. Then, copy the
+reference `xinitrc` to `~/.xinitrc` and, after your next login, start X with
+`startx` (alternatively, use the provided `xinitrc` directly with `startx
 ~/.xmonad/xinitrc`).
 
 A few words about some of the other files in this directory:
