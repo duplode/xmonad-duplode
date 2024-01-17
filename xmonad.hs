@@ -101,14 +101,19 @@ promptBaseCfg = def { Prompt.font = "xft:Hack:size=10" }
 -- The skeleton of this main originates from
 -- https://wiki.haskell.org/Xmonad/Config_archive/John_Goerzen's_Configuration
 main = do
+    -- On arranging an analogous custom-built xmobar setup, see the
+    -- final section of https://stackoverflow.com/a/77817486/2751851
+    let useCustomBuiltXmobar = False
+    xmobarPath <- (\dir -> dir </> "bin" </> "xmobar")
+        <$> getAppUserDataDirectory
+            (if useCustomBuiltXmobar then "local" else "cabal")
+    configDir <- getAppUserDataDirectory "xmonad"
     -- The xmobar configuration is coupled to the xmonad one, so I might as
     -- well keep it here too.
-    xmobarPath <- (\dir -> dir </> "bin" </> "xmobar")
-        <$> getAppUserDataDirectory "cabal"
-    configDir <- getAppUserDataDirectory "xmonad"
     let xmobarConfigPath = configDir </> "xmobarrc"
-    xmproc <- spawnPipe $ intercalate " " [xmobarPath, xmobarConfigPath]
-
+    xmproc <- spawnPipe $ if useCustomBuiltXmobar
+        then xmobarPath
+        else intercalate " " [xmobarPath, xmobarConfigPath]
     homeDir <- getHomeDirectory
 
     xmonad $ docks $ ewmhFullscreen $ ewmh def
