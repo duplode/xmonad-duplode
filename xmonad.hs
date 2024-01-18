@@ -105,8 +105,7 @@ main = do
     -- final section of https://stackoverflow.com/a/77817486/2751851
     let useCustomBuiltXmobar = False
     xmobarPath <- (\dir -> dir </> "bin" </> "xmobar")
-        <$> getAppUserDataDirectory
-            (if useCustomBuiltXmobar then "local" else "cabal")
+        <$> getAppUserDataDirectory "cabal"
     configDir <- getAppUserDataDirectory "xmonad"
     -- The xmobar configuration is coupled to the xmonad one, so I might as
     -- well keep it here too.
