@@ -41,10 +41,10 @@ Config
             , "-i" , "<fc=#00cc00>Charged</fc>"
             ] 50
         , Run Date "%a %d/%m %R" "date" 10
-        , Run StdinReader
+        , Run XMonadLog
         ]
     , sepChar = "%"
     , alignSep = "}{"
     --, template = "%StdinReader% } %autompd% { %cpu% | %memory% * %swap% | %battery%   <fc=#ee9a00>%date%</fc>   %SBSP%"
-    , template = "%StdinReader% }{ %cpu% | %memory% * %swap% | %battery%   <fc=#ee9a00>%date%</fc>   %SBSP%"
+    , template = "%XMonadLog% }{ %cpu% | %memory% * %swap% | %battery%   <fc=#ee9a00>%date%</fc>   %SBSP%"
     }

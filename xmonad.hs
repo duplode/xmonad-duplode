@@ -9,7 +9,8 @@ import Data.List
 
 import XMonad
 import qualified XMonad.StackSet as W
-import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.StatusBar
+import XMonad.Hooks.StatusBar.PP
 import XMonad.Hooks.ManageDocks
 import XMonad.Util.Run (spawnPipe)
 import XMonad.Util.EZConfig (additionalKeys)
@@ -111,21 +112,22 @@ main = do
     -- The xmobar configuration is coupled to the xmonad one, so I might as
     -- well keep it here too.
     let xmobarConfigPath = configDir </> "xmobarrc"
-    xmproc <- spawnPipe $ if useCustomBuiltXmobar
-        then xmobarPath
-        else intercalate " " [xmobarPath, xmobarConfigPath]
+        xmobarCmd = if useCustomBuiltXmobar
+            then xmobarPath
+            else intercalate " " [xmobarPath, xmobarConfigPath]
+        myPP = xmobarPP
+            { ppTitle = xmobarColor "lime" "" . shorten 120
+            }
+        mySB = statusBarProp xmobarCmd (pure myPP)
+
     homeDir <- getHomeDirectory
 
-    xmonad $ docks $ ewmhFullscreen $ ewmh def
+    xmonad $ withSB mySB $ docks $ ewmhFullscreen $ ewmh def
         { manageHook = floatNextHook <+> manageDocks
             <+> myManageHook <+> manageHook def
         , layoutHook = workspaceDir homeDir
             . minimize . boringWindows . avoidStruts
             $ myLayoutHook
-        , logHook = dynamicLogWithPP xmobarPP
-            { ppOutput = hPutStrLn xmproc
-            , ppTitle = xmobarColor "lime" "" . shorten 120
-            }
             -- >> updatePointer (0.5, 0.5) (0, 0)
         -- The default handleEventHook is mempty, so there is no need to
         -- include it here.
