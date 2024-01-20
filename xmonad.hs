@@ -37,6 +37,7 @@ launchHook = composeAll
     [ className =? "Gimp" --> doFloat
     , className =? "Xfce4-appfinder" --> doFloat
     , className =? "kruler" --> doFloat
+    , className =? "QRuler" --> doFloat
     -- This Spotify hook requires https://github.com/dasJ/spotifywm
     , className =? "Spotify" --> doShift "8"
     -- I'd rather shift the machine, but that doesn't seem to work out of the
