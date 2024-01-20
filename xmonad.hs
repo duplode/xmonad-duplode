@@ -124,7 +124,7 @@ main = do
             $ myLayoutHook
         , logHook = dynamicLogWithPP xmobarPP
             { ppOutput = hPutStrLn xmproc
-            , ppTitle = xmobarColor "green" "" . shorten 90
+            , ppTitle = xmobarColor "lime" "" . shorten 120
             }
             -- >> updatePointer (0.5, 0.5) (0, 0)
         -- The default handleEventHook is mempty, so there is no need to
